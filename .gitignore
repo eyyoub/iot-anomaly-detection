@@ -1,0 +1,52 @@
+# ── Secrets ──────────────────────────────────────────────────────────────────
+.env
+.env.*
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv*/
+venv/
+env/
+
+# ── Raw datasets (too large — raw CSVs live in SKAB/NAB repos) ──────────────
+SKAB/
+NAB/
+data/
+
+# ── Processed arrays (downloaded from HF Hub at runtime) ────────────────────
+npy_skab/
+npy_nab/
+processed/
+
+# ── Model checkpoints (large binary files) ───────────────────────────────────
+models/
+
+# ── Experiment outputs (plots, JSON logs) ────────────────────────────────────
+outputs/
+
+# ── W&B local run artifacts ──────────────────────────────────────────────────
+wandb/
+
+# ── Local documentation / chart generation ───────────────────────────────────
+docs/
+
+# ── One-off utility scripts ──────────────────────────────────────────────────
+push_datasets_to_hf.py
+
+# ── Claude Code config ───────────────────────────────────────────────────────
+.claude/
+CLAUDE.md
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+
+# ── Jupyter checkpoints ──────────────────────────────────────────────────────
+.ipynb_checkpoints/

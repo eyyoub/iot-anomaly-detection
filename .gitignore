@@ -18,7 +18,9 @@ env/
 # ── Raw datasets (too large — raw CSVs live in SKAB/NAB repos) ──────────────
 SKAB/
 NAB/
-data/
+data/**
+!data/*/
+!data/*/README.md
 
 # ── Processed arrays (downloaded from HF Hub at runtime) ────────────────────
 npy_skab/

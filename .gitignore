@@ -15,7 +15,7 @@ build/
 venv/
 env/
 
-# ── Raw datasets (too large — raw CSVs live in SKAB/NAB repos) ──────────────
+# ── Raw datasets (too large - raw CSVs live in SKAB/NAB repos) ──────────────
 SKAB/
 NAB/
 data/**
@@ -41,11 +41,15 @@ docs/
 
 # ── One-off utility scripts ──────────────────────────────────────────────────
 push_datasets_to_hf.py
+strip_notebooks.py
 
-# ── Claude Code config ───────────────────────────────────────────────────────
+# ── Hidden/local config folders ──────────────────────────────────────────────
 .claude/
+.vscode/
+.idea/
 CLAUDE.md
 plan.md
+*.local
 
 # ── macOS ────────────────────────────────────────────────────────────────────
 .DS_Store

@@ -58,3 +58,6 @@ plan.md
 
 # ── Jupyter checkpoints ──────────────────────────────────────────────────────
 .ipynb_checkpoints/
+
+# ── Raw backup run (reference copy, not for version control) ─────────────────
+new_run/

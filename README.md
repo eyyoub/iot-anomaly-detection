@@ -1,7 +1,7 @@
 # Uncertainty Estimation for Anomaly Detection in IoT Data
 
-Code for the paper *"Uncertainty Estimation for Anomaly Detection in IoT Data"*
-(Soullami and Hornyák). Autoencoders with MC Dropout and Conformal Prediction on SKAB and NAB.
+Code for the paper *"Uncertainty Estimation for Anomaly Detection in IoT Data"*.
+Autoencoders with MC Dropout and Conformal Prediction on SKAB and NAB.
 
 ## The paper's experiments: R01–R06
 

@@ -61,3 +61,16 @@ plan.md
 
 # ── Raw backup run (reference copy, not for version control) ─────────────────
 new_run/
+
+# ── Review-fix experiment outputs ────────────────────────────────────────────
+# records (small JSON) and REV_ tables/figures ARE tracked; per-window arrays,
+# caches and test runs are not.
+cache/
+results/arrays/
+results/errors/
+results_smoke/
+results_fast/
+run_all.log
+
+# internal notes, not for the public repo
+README_REVIEW_FIX.md

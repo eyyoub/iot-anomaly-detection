@@ -1,0 +1,4 @@
+ratios,test windows,test prevalence,files with a test anomaly
+60/10/10/20,70260,0.115,18/58
+50/10/10/30,106837,0.124,32/58
+40/10/10/40,143385,0.119,41/58

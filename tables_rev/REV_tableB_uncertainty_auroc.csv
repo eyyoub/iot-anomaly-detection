@@ -1,0 +1,5 @@
+dataset,method,std/label_auroc,std/error_auroc,vote/error_auroc,cv/error_auroc,margin/error_auroc,n_seeds
+NAB,M1 Dense+MCD,0.626 ± 0.014,0.706 ± 0.012,0.537 ± 0.006,0.329 ± 0.009,0.645 ± 0.002,5
+NAB,M2 LSTM+MCD,0.623 ± 0.011,0.698 ± 0.005,0.521 ± 0.004,0.390 ± 0.013,0.650 ± 0.008,5
+SKAB,M1 Dense+MCD,0.810 ± 0.007,0.400 ± 0.007,0.537 ± 0.002,0.542 ± 0.021,0.646 ± 0.002,5
+SKAB,M2 LSTM+MCD,0.760 ± 0.019,0.430 ± 0.015,0.523 ± 0.009,0.595 ± 0.031,0.637 ± 0.007,5

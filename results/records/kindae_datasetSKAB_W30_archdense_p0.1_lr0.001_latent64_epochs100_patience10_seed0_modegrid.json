@@ -1,0 +1,1 @@
+{"tag": "kindae_datasetSKAB_W30_archdense_p0.1_lr0.001_latent64_epochs100_patience10_seed0_modegrid", "kind": "ae", "dataset": "SKAB", "W": 30, "arch": "dense", "p": 0.1, "lr": 0.001, "latent": 64, "seed": 0, "mode": "grid", "epochs": 100, "patience": 10, "best_val": 0.02828182280063629, "n_epochs": 100, "time_s": 10.93648076057434}

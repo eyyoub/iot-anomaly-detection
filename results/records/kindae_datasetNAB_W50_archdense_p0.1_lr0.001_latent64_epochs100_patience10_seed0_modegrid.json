@@ -1,0 +1,1 @@
+{"tag": "kindae_datasetNAB_W50_archdense_p0.1_lr0.001_latent64_epochs100_patience10_seed0_modegrid", "kind": "ae", "dataset": "NAB", "W": 50, "arch": "dense", "p": 0.1, "lr": 0.001, "latent": 64, "seed": 0, "mode": "grid", "epochs": 100, "patience": 10, "best_val": 0.009413700899630653, "n_epochs": 27, "time_s": 21.963242769241333}

@@ -1,0 +1,5 @@
+dataset,arch,p,lr,latent
+SKAB,dense,0.05,0.001,64.0
+SKAB,lstm,0.05,0.002,64.0
+NAB,dense,0.05,0.002,64.0
+NAB,lstm,0.05,0.001,16.0

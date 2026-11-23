@@ -10,3 +10,6 @@ jinja2
 torch
 wandb
 nbformat
+scipy
+nbconvert
+ipykernel

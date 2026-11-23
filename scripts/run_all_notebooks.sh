@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Execute the revision notebooks in order, saving outputs inside each notebook.
+# Execute notebooks R01-R06 in order, saving outputs inside each notebook.
 # Run inside tmux on the pod so a dropped SSH connection does not stop it:
 #   tmux new -s rev 'bash scripts/run_all_notebooks.sh 2>&1 | tee run_all.log'
 # Usage: bash scripts/run_all_notebooks.sh [R01 R02 ...]   (default: all)

@@ -1,5 +1,0 @@
-dataset,protocol,train,val,cal,test,test_anom,test_prevalence
-SKAB,old,23588,3345,0,19786,13357,0.675
-SKAB,new,16071,1850,1854,23008,13987,0.608
-NAB,old,229577,30354,0,97101,34579,0.356
-NAB,new,130372,29820,29753,143385,17133,0.119

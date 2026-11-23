@@ -1,6 +1,6 @@
-"""Metrics for the revision.
+"""Metrics.
 
-Definitions (these go into Section 4.6 of the manuscript):
+Definitions (Section 4.6 of the paper):
 
   AUC-PR      sklearn average_precision_score (step-wise average precision,
               not trapezoidal), computed on all test windows pooled across
@@ -10,7 +10,7 @@ Definitions (these go into Section 4.6 of the manuscript):
   conformal   p(s) = (1 + #{i : s_i >= s}) / (n_cal + 1), s_i = cal scores;
               y_hat = 1[p <= alpha].
   error       E = 1[y_hat != y].
-  label-AUROC AUROC(u vs y): the paper's old "AUROC(unc)".
+  label-AUROC AUROC(u vs y): does uncertainty separate anomalies from normal?
   error-AUROC AUROC(u vs E): does uncertainty flag wrong decisions?
   AURC        area under the risk-coverage curve: sort by u ascending
               (most confident first), risk(k) = error rate of the k most

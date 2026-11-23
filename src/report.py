@@ -1,7 +1,6 @@
-"""Turn results/records/*.json into the tables and figures of the revision.
+"""Turn results/records/*.json into tables and figures.
 
-All new or changed figures are saved as figures_rev/REV_*.png so they stand
-out from the figures of the submitted version.
+Figures are saved as figures_rev/REV_*.png.
 """
 import glob
 import json

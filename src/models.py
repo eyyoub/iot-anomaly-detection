@@ -1,6 +1,6 @@
 """Models, training and MC Dropout inference.
 
-Architectures are copied from the notebooks used for the submitted paper:
+Architectures are the same as in the exploratory notebooks:
   DenseAE            nb 03/04 (B3 with p=0, M1 with p>0)
   LSTMAE             nb 05    (M2/M2b with p>0, M4 backbone with p=0)
   DenseDropoutModel  nb 08    (M5)

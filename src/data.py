@@ -1,7 +1,6 @@
-"""Revised data protocol (review-fix): leak-free per-file chronological splits
-into train / val / cal / test.
+"""Data protocol: leak-free per-file chronological splits into
+train / val / cal / test.
 
-What changed vs notebooks 01/02 (the protocol used in the submitted paper):
   * Files are never concatenated before splitting; every file is cut by time.
   * Anomalies are never moved. A window keeps the period it occurs in.
     Train/val/cal windows that contain an anomaly are dropped (models train
@@ -19,8 +18,8 @@ train/val/cal/test-head by `skab_ratios` (default 60/10/10/20), and the
 test split is the test-head plus everything from the fault onward.
 anomaly-free.csv is split chronologically by the same ratios.
 
-NAB: each file is split chronologically by `nab_ratios` (default 40/10/10/40,
-see README_REVIEW_FIX.md for why not 60/10/10/20).
+NAB: each file is split chronologically by `nab_ratios` (default 40/10/10/40;
+R01 shows why not 60/10/10/20).
 """
 import glob
 import json

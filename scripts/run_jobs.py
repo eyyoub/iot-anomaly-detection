@@ -1,4 +1,4 @@
-"""Run a stage of the revision experiments, N jobs in parallel on one GPU.
+"""Run a stage of the experiments, N jobs in parallel on one GPU.
 
 Stages (run in this order):
   smoke   2-epoch versions of every job type, separate results dir

@@ -1,7 +1,6 @@
-"""Generate the R0x revision notebooks.  python -m scripts.make_notebooks
+"""Generate notebooks R01-R06.  python -m scripts.make_notebooks
 
-The notebooks are the deliverable: run them on RunPod (outputs are saved in
-the notebook), pull them back, review, push. Heavy code lives in src/.
+Edit this file, not the notebooks. Heavy code lives in src/.
 """
 import nbformat as nbf
 
@@ -10,9 +9,9 @@ import os
 WORKERS = int(os.environ.get("REV_WORKERS", 8))   # training jobs side by side on the GPU
 DEVICE  = None     # None = use the GPU if there is one
 RESULTS = os.environ.get("REV_RESULTS", "results")
-RUN     = True     # False = skip training, only rebuild tables/figures from results/
+RUN     = os.environ.get("REV_RUN", "1") == "1"   # False = skip training, rebuild tables/figures from results/
 
-import os, warnings
+import warnings
 import numpy as np, pandas as pd, matplotlib.pyplot as plt
 from IPython.display import display, Markdown
 from src import report, plots
@@ -49,26 +48,15 @@ def save(name, cells):
 # ─────────────────────────────────────────────────────────────────────────────
 R01 = [
     md("""
-# R01 · New data splits (review fix)
+# R01 · Data splits
 
-**Reviewer C:** "Sections 3 and 4 describe chronological 70/10/20 splits, whereas Figure 1 states that all
-anomalous windows are assigned exclusively to the test set. What happens to anomalies in the original
-training and validation periods?"
+Each file is split **chronologically on its own** into train / val / cal / test:
 
-**What the old code did (notebooks 01/02):** joined all files, split only the *normal* rows by time, and
-moved **every anomaly from every period** into the test set. So the test set mixed the *latest* normal data
-with anomalies from *all* periods. This changes what the models are tested on, and it is the reason the
-NAB test prevalence was 35.6%.
-
-**What this notebook does instead:**
-
-| | Old (submitted paper) | New (this revision) |
-|---|---|---|
-| Unit of splitting | all files joined | each file separately |
-| Anomalies | all moved to test | stay where they happen; windows with anomalies are dropped from train/val/cal |
-| Splits | train / val / test | train / val / **cal** / test |
-| Calibration for conformal | val (also used for early stopping) | separate **cal** split, used for nothing else |
-| Scaler | MinMax fitted on train | MinMax fitted per file on its train rows |
+* Anomalies stay in the period where they occur. Windows with an anomaly are dropped from train, val and cal,
+  so the models train on normal data only.
+* The **cal** split is used only to calibrate conformal prediction; early stopping uses val.
+* The MinMax scaler is fitted per file on that file's train rows.
+* Windows never cross a split or file boundary.
 
 **SKAB:** every experiment file is ≈570 normal rows → one fault (≈400 rows) → a normal tail. The *normal
 prefix* before the fault is split 60/10/10/20 (train/val/cal/test-head); the test split is the test-head
@@ -82,17 +70,6 @@ data = {ds: get_data(ds, rebuild=True) for ds in ("SKAB", "NAB")}
 summ = {ds: summary(d) for ds, d in data.items()}
 for ds, s in summ.items():
     display(Markdown(f"**{ds}** (W={data[ds]['window_size']})")); display(s)'''),
-    md("### Old vs new split sizes\nOld numbers are the ones printed in Section 3 of the submitted paper."),
-    code('''old = {"SKAB": dict(train=23588, val=3345, cal=0, test=19786, test_anom=13357),
-       "NAB":  dict(train=229577, val=30354, cal=0, test=97101, test_anom=34579)}
-rows = []
-for ds in ("SKAB", "NAB"):
-    s = summ[ds].set_index("split")
-    new = dict(train=s.loc["train","windows"], val=s.loc["val","windows"], cal=s.loc["cal","windows"],
-               test=s.loc["test","windows"], test_anom=s.loc["test","anomalous"])
-    for tag, v in (("old", old[ds]), ("new", new)):
-        rows.append({"dataset": ds, "protocol": tag, **v, "test_prevalence": round(v["test_anom"]/v["test"], 3)})
-export(pd.DataFrame(rows).set_index(["dataset","protocol"]), "split_old_vs_new")'''),
     md("""
 ### Why NAB uses 40/10/10/40 and not 60/10/10/20
 NAB anomalies are spread over the whole series. With a 60/10/10/20 cut, most labelled anomalies fall in the
@@ -111,7 +88,7 @@ export(pd.DataFrame(opts).set_index("ratios"), "nab_split_options")'''),
 pf = pd.DataFrame({s: pd.Series(d[f"file_{s}"]).value_counts() for s in ("train","val","cal","test")}).fillna(0).astype(int)
 pf["test anomalous"] = pd.Series(d["y_test"]).groupby(d["file_test"]).sum()
 display(pf.sort_index())'''),
-    md("### New Figure 1 (replaces the old split figure)"),
+    md("### Split composition (Figure 1)"),
     code('''fig, path = plots.split_composition(summ); plt.show(); print("saved", path)'''),
     md("### Checks"),
     code('''from src.data import check
@@ -126,11 +103,11 @@ R02 = [
     md("""
 # R02 · Hyperparameter grid search (M1 Dense+MCD, M2 LSTM+MCD)
 
-Same grid as the submitted paper (Reviewer A asked why grid search was used):
+Grid searched for the two MC Dropout models:
 
 * learning rate ∈ {5e-4, 1e-3, 2e-3}, latent dimension ∈ {16, 32, 64}, dropout p ∈ {0.05, 0.10, 0.20}
 * 27 combinations × 2 architectures × 2 datasets = 108 runs, seed 0, up to 100 epochs, patience 10.
-* **Selection criterion: lowest validation reconstruction loss** (as in the original notebooks). It uses
+* **Selection criterion: lowest validation reconstruction loss** . It uses
   no labels and never touches the calibration or test split.
 
 Why grid search: the space is small (27 points), so an exhaustive search is cheap, fully reproducible, and
@@ -151,24 +128,22 @@ win = pd.DataFrame(grid_winners()).T
 win.index.names = ["dataset","arch"]
 export(win, "grid_winners")'''),
     md("""
-**Note for the paper:** selecting by validation loss favours the smallest dropout rate, because dropout
-adds noise to the reconstruction. That explains why the original search picked p = 0.05 every time.
+**Note:** selecting by validation loss favours the smallest dropout rate, because dropout adds noise to the
+reconstruction. This is why p = 0.05 is selected every time.
 """),
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
 R03 = [
     md("""
-# R03 · Main experiments: 5 seeds, detection + uncertainty against **errors**
+# R03 · Main experiments: detection and uncertainty against **errors**, 5 seeds
 
-**Reviewer C:** single runs are not enough, and "uncertainty vs anomaly label" does not show whether
-uncertainty identifies **unreliable predictions**.
-
-Each model is trained with 5 seeds (0–4). Each B3 run also gives M3 (conformal on **the same** B3 scores, no
+Uncertainty is evaluated both against the anomaly labels and against the **errors** of the detector, to see
+whether it identifies unreliable predictions. Each model is trained with 5 seeds (0–4). Each B3 run also gives M3 (conformal on **the same** B3 scores, no
 retraining). Each deterministic LSTM run gives M4.
 
 ### How to read the uncertainty columns
-* **label-AUROC**: does uncertainty separate anomalies from normal windows? (the paper's old "AUROC(unc)")
+* **label-AUROC**: does uncertainty separate anomalies from normal windows?
 * **error-AUROC**: does uncertainty separate **wrong** decisions from **right** ones? 0.5 = useless.
 * **AURC**: average error rate when you keep only the most confident windows, over all coverage levels.
   Lower is better. Compare with **random** (reject at random) and **oracle** (reject exactly the errors).
@@ -229,8 +204,7 @@ R04 = [
 * **M2b:** LSTM+MCD with p ∈ {0.001, 0.005, 0.01, 0.02, 0.05}, using the M2 learning rate / latent size from R02.
 * **M5:** single-dropout dense model, p ∈ {0.05, 0.1, 0.2, 0.3, 0.5}, dropout OFF (DET) and MCD inference.
 
-Same new metrics as R03. The submitted paper compared the two sweeps from single runs; here each point is a
-mean over 3 seeds, with the spread shown as a band.
+Same metrics as R03. Each point is the mean over 3 seeds; the band shows the spread.
 """),
     code(SETUP),
     code('''if RUN:
@@ -258,11 +232,9 @@ plt.show(); print("saved", path)'''),
 # ─────────────────────────────────────────────────────────────────────────────
 R05 = [
     md("""
-# R05 · Window-size sensitivity (Reviewer A)
+# R05 · Window-size sensitivity
 
-**Reviewer A:** why W = 30 for SKAB and W = 50 for NAB?
-
-The original values were set by hand: SKAB is sampled once per second and a fault lasts several minutes, so
+The default window sizes are W = 30 for SKAB and W = 50 for NAB: SKAB is sampled once per second and a fault lasts several minutes, so
 30 s windows see a local stretch of the fault; NAB series are mostly 5-minute samples, so 50 steps ≈ 4 hours.
 This notebook checks that the **conclusions** do not depend on that choice: B3 (+M3) and M1 are rerun with
 other window sizes, 3 seeds each.
@@ -288,13 +260,13 @@ plt.show(); print("saved", path)'''),
 # ─────────────────────────────────────────────────────────────────────────────
 R06 = [
     md("""
-# R06 · Confidence intervals and the numbers quoted in the paper
+# R06 · Confidence intervals
 
-Reviewer C / supervisor plan: windows from the same file are strongly dependent (stride 1), so CIs are
+Windows from the same file are strongly dependent (stride 1), so CIs are
 computed by **resampling whole files** (file-level bootstrap, 1000 resamples), not single windows.
 Computed for seed 0 of each main model; the seed-to-seed spread is in R03.
 """),
-    code(SETUP.replace("RUN     = True", "RUN     = False")),
+    code(SETUP),
     code(LOAD),
     code('''from src import metrics as M
 rows = []
@@ -323,7 +295,7 @@ for method, view in [("B3 Dense AE","det_val"), ("M1 Dense+MCD","mc_val"), ("M2 
                         "FPR 95% CI": f"[{lo:.3f}, {hi:.3f}]"})
         rows.append(row)
 export(pd.DataFrame(rows).set_index(["dataset","method"]), "tableH_bootstrap_ci")'''),
-    md("### All REV_ outputs produced so far"),
+    md("### Output files"),
     code('''for d in ("figures_rev", "tables_rev"):
     print(d); [print("  ", f) for f in sorted(os.listdir(d))] if os.path.isdir(d) else print("   (none)")'''),
 ]
